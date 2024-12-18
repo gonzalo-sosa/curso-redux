@@ -1,3 +1,5 @@
+import { createAction } from "@reduxjs/toolkit";
+
 // Actions Types
 const ACTIONS_TYPES = {
   BUG_ADDED: "bugAdded",
@@ -6,26 +8,9 @@ const ACTIONS_TYPES = {
 };
 
 // Actions Creators
-const bugAdded = (description) => ({
-  type: ACTIONS_TYPES.BUG_ADDED,
-  payload: {
-    description,
-  },
-});
-
-const bugRemoved = (id) => ({
-  type: ACTIONS_TYPES.BUG_REMOVED,
-  payload: {
-    id,
-  },
-});
-
-const bugResolved = (id) => ({
-  type: ACTIONS_TYPES.BUG_RESOLVED,
-  payload: {
-    id,
-  },
-});
+const bugAdded = createAction(ACTIONS_TYPES.BUG_ADDED);
+const bugRemoved = createAction(ACTIONS_TYPES.BUG_REMOVED);
+const bugResolved = createAction(ACTIONS_TYPES.BUG_RESOLVED);
 
 export const actions = {
   bugAdded,
@@ -43,7 +28,7 @@ let lastId = 0;
 
 export default function reducer(state = [], action) {
   switch (action.type) {
-    case ACTIONS_TYPES.BUG_ADDED:
+    case bugAdded.type:
       return [
         ...state,
         {
@@ -53,13 +38,17 @@ export default function reducer(state = [], action) {
         },
       ];
 
-    case ACTIONS_TYPES.BUG_REMOVED:
+    case bugRemoved.type:
       return state.filter((bug) => bug.id !== action.payload.id);
 
-    case ACTIONS_TYPES.BUG_RESOLVED:
+    case bugResolved.type:
       const index = state.findIndex((bug) => bug.id === action.payload.id);
-      const bugResolved = { ...state[index], resolved: true };
-      return [...state.slice(0, index), bugResolved, ...state.slice(index + 1)];
+      const stateUpdated = { ...state[index], resolved: true };
+      return [
+        ...state.slice(0, index),
+        stateUpdated,
+        ...state.slice(index + 1),
+      ];
 
     default:
       return state;
