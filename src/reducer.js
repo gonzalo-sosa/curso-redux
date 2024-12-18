@@ -25,7 +25,7 @@ function reducer(state = [], action) {
     case actions.BUG_RESOLVED:
       const index = state.findIndex((bug) => bug.id === action.payload.id);
       const bugResolved = { ...state[index], resolved: true };
-      return [...state, bugResolved];
+      return [...state.slice(0, index), bugResolved, ...state.slice(index + 1)];
 
     default:
       return state;
