@@ -1,4 +1,4 @@
-import { createAction } from "@reduxjs/toolkit";
+import { createAction, createReducer } from "@reduxjs/toolkit";
 
 // Actions Types
 const ACTIONS_TYPES = {
@@ -18,39 +18,62 @@ export const actions = {
   bugResolved,
 };
 
+// Crea un reducer con estado inicial y un objeto con las funciones a ejecutar por cada acción
+// El código ejecutado dentro de cada puede ser mutable ya que redux utiliza immer por detrás
 let lastId = 0;
 
-/**
- * Reducer, actualiza el estado global de acuerdo a la acción indicada
- * @param {[]} state
- * @param {{ type: ACTIONS_TYPES.BUG_ADDED | ACTIONS_TYPES.BUG_REMOVED | ACTIONS_TYPES.BUG_RESOLVED, payload: { } }} action
- */
+export default createReducer([], (builder) => {
+  builder
+    .addCase(bugAdded, (bugs, action) => {
+      bugs.push({
+        id: ++lastId,
+        description: action.payload.description,
+        resolved: false,
+      });
+    })
+    .addCase(bugRemoved, (bugs, action) => {
+      bugs = bugs.filter(({ id }) => id !== action.payload.id);
+    })
+    .addCase(bugResolved, (bugs, action) => {
+      const bugToUpdate = bugs.find(({ id }) => id === action.payload.id);
+      bugToUpdate.resolved = true;
+    })
+    .addDefaultCase((bugs, action) => {});
+});
 
-export default function reducer(state = [], action) {
-  switch (action.type) {
-    case bugAdded.type:
-      return [
-        ...state,
-        {
-          id: ++lastId,
-          description: action.payload.description,
-          resolved: false,
-        },
-      ];
+// let lastId = 0;
 
-    case bugRemoved.type:
-      return state.filter((bug) => bug.id !== action.payload.id);
+// /**
+//  * Reducer, actualiza el estado global de acuerdo a la acción indicada
+//  * @param {[]} state
+//  * @param {{ type: ACTIONS_TYPES.BUG_ADDED | ACTIONS_TYPES.BUG_REMOVED | ACTIONS_TYPES.BUG_RESOLVED, payload: { } }} action
+//  */
 
-    case bugResolved.type:
-      const index = state.findIndex((bug) => bug.id === action.payload.id);
-      const stateUpdated = { ...state[index], resolved: true };
-      return [
-        ...state.slice(0, index),
-        stateUpdated,
-        ...state.slice(index + 1),
-      ];
+// export default function reducer(state = [], action) {
+//   switch (action.type) {
+//     case bugAdded.type:
+//       return [
+//         ...state,
+//         {
+//           id: ++lastId,
+//           description: action.payload.description,
+//           resolved: false,
+//         },
+//       ];
 
-    default:
-      return state;
-  }
-}
+//     case bugRemoved.type:
+//       return state.filter((bug) => bug.id !== action.payload.id);
+
+//     case bugResolved.type:
+//       const index = state.findIndex((bug) => bug.id === action.payload.id);
+//       const stateUpdated = { ...state[index], resolved: true };
+//       return [
+//         ...state.slice(0, index),
+//         stateUpdated,
+//         ...state.slice(index + 1),
+//       ];
+
+//     default:
+//       return state;
+//   }
+// }
