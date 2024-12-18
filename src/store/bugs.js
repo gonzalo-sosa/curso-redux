@@ -1,4 +1,5 @@
 import { createAction, createReducer, createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
 // Actions Types
 // const ACTIONS_TYPES = {
@@ -98,14 +99,35 @@ const bugSlice = createSlice({
       const bugToUpdate = bugs.find(({ id }) => id === action.payload.id);
       bugToUpdate.resolved = true;
     },
+    bugAssignedToUser: (bugs, action) => {
+      const { bugId, userId } = action.payload;
+      const bugToUpload = bugs.find(({ id }) => id === bugId);
+      bugToUpload.userId = userId;
+    },
   },
 });
 
-const { bugAdded, bugRemoved, bugResolved } = bugSlice.actions;
-export const actions = {
-  bugAdded,
-  bugRemoved,
-  bugResolved,
-};
-
+export const { bugAdded, bugRemoved, bugResolved, bugAssignedToUser } =
+  bugSlice.actions;
 export default bugSlice.reducer;
+
+// Selectors
+// /**
+//  * Retorna los bugs con la propiedad "resolved" en "false"
+//  * @param {state: { entities }}
+//  * @returns {[]}
+//  */
+// export const getUnresolvedBugs = ({ entities }) =>
+//   entities.bugs.filter(({ resolved }) => !resolved);
+
+// Memoization
+export const getUnresolvedBugs = createSelector(
+  (state) => state.entities.bugs,
+  (bugs) => bugs.filter(({ resolved }) => !resolved)
+);
+
+export const getBugsByUser = (userId) =>
+  createSelector(
+    (state) => state.entities.bugs,
+    (bugs) => bugs.filter((bug) => bug.userId === userId)
+  );
