@@ -7,13 +7,24 @@ import { userAdded } from './store/users.js';
 function App() {
   const store = configureStore()
 
-  store.dispatch(bugAdded({ description: "Bug 1"}))
-  store.dispatch(bugAdded({ description: "Bug 2"}))
-  store.dispatch(bugResolved({ id: 1 }))
-  store.dispatch(bugAssignedToUser({ bugId: 1, userId: 1 }))
-  store.dispatch(projectAdded({ name: "Project 1" }))
-  store.dispatch(userAdded({ name: "Agustín"}))
-  store.dispatch(userAdded({ name: "Gonzalo" }))
+  // store.dispatch(bugAdded({ description: "Bug 1"}))
+  // store.dispatch(bugAdded({ description: "Bug 2"}))
+  // store.dispatch(bugResolved({ id: 1 }))
+  
+  store.dispatch((dispatch, getState) => {
+    dispatch({ type: "bugsReceived", bugs: [1, 2, 3] })
+    console.log({ state: getState() })
+  })
+  
+  store.dispatch({
+    type: "error",
+    payload: { message: "An error occurred"}
+  })
+
+  // store.dispatch(bugAssignedToUser({ bugId: 1, userId: 1 }))
+  // store.dispatch(projectAdded({ name: "Project 1" }))
+  // store.dispatch(userAdded({ name: "Agustín"}))
+  // store.dispatch(userAdded({ name: "Gonzalo" }))
 
   console.log(
     getBugsByUser(1)(store.getState())
@@ -27,7 +38,7 @@ function App() {
       <ul>{
         store.getState().entities.bugs.map(bug => <li key={bug.id}>{JSON.stringify(bug)}</li>)
       }</ul>
-      <h3>Unresolved Bugs</h3>
+      {/* <h3>Unresolved Bugs</h3>
       <ul>{
         getUnresolvedBugs(store.getState()).map(bug => <li key={bug.id}>{JSON.stringify(bug)}</li>)
       }</ul>
@@ -38,7 +49,7 @@ function App() {
       <h2>Users</h2>
       <ul>{
         store.getState().entities.users.map(user => <li key={user.id}>{JSON.stringify(user)}</li>)
-      }</ul>
+      }</ul> */}
     </>
   )
 }
