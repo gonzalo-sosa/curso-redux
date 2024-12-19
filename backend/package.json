@@ -1,12 +1,11 @@
 {
-  "name": "bugs-backend",
+  "name": "backend",
   "version": "1.0.0",
   "description": "A simple backend for the bug tracking app.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "dev": "node index.js"
   },
-  "author": "Mosh Hamedani",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
