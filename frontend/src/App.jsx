@@ -1,6 +1,6 @@
 import './App.css'
 import configureStore from './store/configureStore.js';
-import { bugAdded, bugAssignedToUser, bugResolved, getBugsByUser, getUnresolvedBugs } from "./store/bugs.js"
+import { addBug, bugAdded, bugAssignedToUser, bugResolved, getBugsByUser, getUnresolvedBugs } from "./store/bugs.js"
 import { projectAdded } from './store/projects.js';
 import { userAdded } from './store/users.js';
 import { loadBugs } from './store/bugs.js';
@@ -22,7 +22,8 @@ function App() {
     payload: { message: "An error occurred"}
   })
 
-  store.dispatch(loadBugs())
+  // store.dispatch(loadBugs())
+  store.dispatch(addBug({ description: "a"}))
 
   // store.dispatch(bugAssignedToUser({ bugId: 1, userId: 1 }))
   // store.dispatch(projectAdded({ name: "Project 1" }))
