@@ -1,6 +1,7 @@
 import { createAction, createReducer, createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
 import { apiCallBegan } from "./api";
+import moment from "moment";
 
 // Actions Types
 // const ACTIONS_TYPES = {
@@ -159,7 +160,7 @@ export const loadBugs = () => (dispatch, getState) => {
   const { lastFetch } = getState().entities.bugs;
 
   if (!lastFetch) {
-    const diffInMinutes = moment().diff(moment(lastFetch, minutes));
+    const diffInMinutes = moment().diff(moment(lastFetch, "minutes"));
     if (diffInMinutes < 10) return;
   }
 
