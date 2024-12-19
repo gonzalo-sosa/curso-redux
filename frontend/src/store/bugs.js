@@ -83,25 +83,25 @@ let lastId = 0;
 
 const bugSlice = createSlice({
   name: "bugs",
-  initialState: [],
+  initialState: { list: [], loading: false, lastFetch: null },
   reducers: {
-    bugAdded: (bugs, action) => {
-      bugs.push({
+    bugAdded: ({ list }, action) => {
+      list.push({
         id: ++lastId,
         description: action.payload.description,
         resolved: false,
       });
     },
-    bugRemoved: (bugs, action) => {
-      bugs = bugs.filter(({ id }) => id !== action.payload.id);
+    bugRemoved: ({ list }, action) => {
+      list = list.filter(({ id }) => id !== action.payload.id);
     },
-    bugResolved: (bugs, action) => {
-      const bugToUpdate = bugs.find(({ id }) => id === action.payload.id);
+    bugResolved: ({ list }, action) => {
+      const bugToUpdate = list.find(({ id }) => id === action.payload.id);
       bugToUpdate.resolved = true;
     },
-    bugAssignedToUser: (bugs, action) => {
+    bugAssignedToUser: ({ list }, action) => {
       const { bugId, userId } = action.payload;
-      const bugToUpload = bugs.find(({ id }) => id === bugId);
+      const bugToUpload = list.find(({ id }) => id === bugId);
       bugToUpload.userId = userId;
     },
   },
