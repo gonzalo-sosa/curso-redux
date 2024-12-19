@@ -35,7 +35,7 @@ const bugSlice = createSlice({
       bugToUpdate.resolved = true;
     },
     bugAssignedToUser: ({ list }, action) => {
-      const { bugId, userId } = action.payload;
+      const { id: bugId, userId } = action.payload;
       const bugToUpload = list.find(({ id }) => id === bugId);
       bugToUpload.userId = userId;
     },
@@ -72,7 +72,7 @@ const url = "/bugs";
 export const loadBugs = () => (dispatch, getState) => {
   const { lastFetch } = getState().entities.bugs;
 
-  if (!lastFetch) {
+  if (lastFetch) {
     const diffInMinutes = moment().diff(moment(lastFetch, "minutes"));
     if (diffInMinutes < 10) return;
   }
@@ -80,6 +80,7 @@ export const loadBugs = () => (dispatch, getState) => {
   dispatch(
     apiCallBegan({
       url,
+      method: "get",
       onStart: bugsRequested.type,
       onSuccess: bugsReceived.type,
       onError: bugsRequestedFailed.type,
@@ -93,4 +94,20 @@ export const addBug = (bug) =>
     method: "post",
     data: bug,
     onSuccess: bugAdded.type,
+  });
+
+export const resolveBug = (id) =>
+  apiCallBegan({
+    url: `${url}/${id}`,
+    method: "patch",
+    data: { resolved: true },
+    onSuccess: bugResolved.type,
+  });
+
+export const assignBugToUser = (bugId, userId) =>
+  apiCallBegan({
+    url: `${url}/${bugId}`,
+    method: "patch",
+    data: { userId },
+    onSuccess: bugAssignedToUser.type,
   });
