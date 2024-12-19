@@ -1,4 +1,4 @@
-import { createAction, createReducer, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
 import { apiCallBegan } from "./api";
 import moment from "moment";
@@ -42,7 +42,7 @@ const bugSlice = createSlice({
   },
 });
 
-export const {
+const {
   bugAdded,
   bugRemoved,
   bugResolved,
