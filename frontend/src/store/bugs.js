@@ -1,5 +1,6 @@
 import { createAction, createReducer, createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
+import { apiCallBegan } from "./api";
 
 // Actions Types
 // const ACTIONS_TYPES = {
@@ -85,6 +86,15 @@ const bugSlice = createSlice({
   name: "bugs",
   initialState: { list: [], loading: false, lastFetch: null },
   reducers: {
+    bugsRequested: (bugs, action) => {
+      bugs.loading = true;
+    },
+    bugsRequestedFailed: (bugs, action) => {
+      bugs.loading = false;
+    },
+    bugsReceived: (bugs, action) => {
+      bugs.list = action.payload;
+    },
     bugAdded: ({ list }, action) => {
       list.push({
         id: ++lastId,
@@ -107,8 +117,15 @@ const bugSlice = createSlice({
   },
 });
 
-export const { bugAdded, bugRemoved, bugResolved, bugAssignedToUser } =
-  bugSlice.actions;
+export const {
+  bugAdded,
+  bugRemoved,
+  bugResolved,
+  bugAssignedToUser,
+  bugsRequested,
+  bugsRequestedFailed,
+  bugsReceived,
+} = bugSlice.actions;
 export default bugSlice.reducer;
 
 // Selectors
@@ -123,11 +140,23 @@ export default bugSlice.reducer;
 // Memoization
 export const getUnresolvedBugs = createSelector(
   (state) => state.entities.bugs,
-  (bugs) => bugs.filter(({ resolved }) => !resolved)
+  ({ list }) => list.filter(({ resolved }) => !resolved)
 );
 
 export const getBugsByUser = (userId) =>
   createSelector(
     (state) => state.entities.bugs,
-    (bugs) => bugs.filter((bug) => bug.userId === userId)
+    ({ list }) => list.filter((bug) => bug.userId === userId)
   );
+
+// Action Creators
+
+const url = "/bugs";
+
+export const loadBugs = () =>
+  apiCallBegan({
+    url,
+    onStart: bugsRequested.type,
+    onSuccess: bugsReceived.type,
+    onError: bugsRequestedFailed.type,
+  });
