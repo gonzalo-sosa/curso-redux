@@ -72,12 +72,13 @@ const url = "/bugs";
 export const loadBugs = () => (dispatch, getState) => {
   const { lastFetch } = getState().entities.bugs;
 
+  console.log(lastFetch);
   if (lastFetch) {
-    const diffInMinutes = moment().diff(moment(lastFetch, "minutes"));
+    const diffInMinutes = moment().diff(moment(lastFetch), "minutes");
     if (diffInMinutes < 10) return;
   }
 
-  dispatch(
+  return dispatch(
     apiCallBegan({
       url,
       method: "get",
