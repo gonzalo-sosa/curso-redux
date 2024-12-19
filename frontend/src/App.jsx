@@ -3,6 +3,7 @@ import configureStore from './store/configureStore.js';
 import { bugAdded, bugAssignedToUser, bugResolved, getBugsByUser, getUnresolvedBugs } from "./store/bugs.js"
 import { projectAdded } from './store/projects.js';
 import { userAdded } from './store/users.js';
+import * as actionsApi from "./store/api.js"
 
 function App() {
   const store = configureStore()
@@ -20,6 +21,12 @@ function App() {
     type: "error",
     payload: { message: "An error occurred"}
   })
+
+  store.dispatch(actionsApi.apiCallBegan({ 
+      url: "/bugs",
+      onSuccess: "bugsReceived",
+    }
+  ))
 
   // store.dispatch(bugAssignedToUser({ bugId: 1, userId: 1 }))
   // store.dispatch(projectAdded({ name: "Project 1" }))

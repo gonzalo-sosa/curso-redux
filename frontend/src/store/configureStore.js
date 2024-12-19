@@ -6,6 +6,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import reducer from "./reducer.js";
 import auth from "./middleware/auth.js";
 import toast from "./middleware/toast.js";
+import api from "./middleware/api.js";
 // import fn from "./middleware/fn.js"; <-- Redux Toolkit provee un forma simple de implementar middleware
 
 export default function () {
@@ -16,6 +17,7 @@ export default function () {
         auth.logger,
         auth.register("param"),
         toast,
+        api,
       ]),
   });
 }

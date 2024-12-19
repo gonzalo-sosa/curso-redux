@@ -2,7 +2,6 @@
   "name": "curso-redux",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
   "frontend:dev": "pnpm --filter frontend dev",
   "backend:dev": "pnpm --filter backend dev",
